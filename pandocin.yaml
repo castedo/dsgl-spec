@@ -1,4 +1,3 @@
 # Reference https://pandoc.org/MANUAL.html#defaults-files
 
-# Change "/dev/null" to the name of a new input source file:
-input-file: "/dev/null"
+input-file: doc.md
