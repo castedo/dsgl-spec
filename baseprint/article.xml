@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.2 20190208//EN"
+                  "JATS-archivearticle1.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.2" article-type="other">
+<front>
+<journal-meta>
+<journal-id></journal-id>
+<journal-title-group>
+</journal-title-group>
+<issn></issn>
+<publisher>
+<publisher-name></publisher-name>
+</publisher>
+</journal-meta>
+<article-meta>
+<title-group>
+<article-title>Document Succession Git Layout Specification</article-title>
+</title-group>
+<contrib-group>
+<contrib contrib-type="author">
+<contrib-id contrib-id-type="orcid">https://orcid.org/0000-0002-5014-4809</contrib-id>
+<name>
+<surname>Ellerman</surname>
+<given-names>E. Castedo</given-names>
+</name>
+<email>castedo@castedo.com</email>
+</contrib>
+</contrib-group>
+<pub-date date-type="pub" publication-format="electronic" iso-8601-date="2024-02-14">
+<day>14</day>
+<month>2</month>
+<year>2024</year>
+</pub-date>
+<permissions>
+<copyright-statement>© 2024, Ellerman et al</copyright-statement>
+<copyright-year>2024</copyright-year>
+<copyright-holder>Ellerman et al</copyright-holder>
+<license license-type="open-access">
+<ali:license_ref xmlns:ali="http://www.niso.org/schemas/ali/1.0/">https://creativecommons.org/licenses/by/4.0/</ali:license_ref>
+<license-p>This document is distributed under a Creative Commons Attribution 4.0 International license.</license-p>
+</license>
+</permissions>
+<abstract>
+<p><bold>DOCUMENT TYPE</bold>: Living Technical Specification</p>
+<p>This specification documents a storage scheme for
+document successions and snapshots that are identifiable by
+<ext-link ext-link-type="uri" xlink:href="https://perm.pub/1wFGhvmv8XZfPx0O5Hya2e9AyXo">Document Succession Identifiers</ext-link>.
+This storage scheme is implemented through Git commit records.
+This specification is descriptive of a Git layout that interoperates with the Hidos
+software package version 1.3 and the Document Succession Highly Manual Toolkit.</p>
+</abstract>
+</article-meta>
+</front>
+<body>
+<sec id="introduction">
+  <title>Introduction</title>
+  <p>For a non-technical background and motivation for this technology,
+  refer to <ext-link ext-link-type="uri" xlink:href="https://perm.pub/wk1LzCaCSKkIvLAYObAvaoLNGPc">Why Publish Baseprint Document Successions</ext-link>.
+  Consult the
+  <ext-link ext-link-type="uri" xlink:href="https://perm.pub/1wFGhvmv8XZfPx0O5Hya2e9AyXo">Document Succession Identifiers</ext-link>
+  specification for a general conceptual model of document successions
+  and their textual identifiers.</p>
+</sec>
+<sec id="baseprint-documents">
+  <title>Baseprint documents</title>
+  <p>This specification does not describe any specific format for the document snapshots
+  stored within a document succession. This specification is compatible with any
+  document snapshot format which can be encoded as a Git blob or Git tree.</p>
+  <p>As of early 2024, the only document snapshot format implemented is
+  with the <ext-link ext-link-type="uri" xlink:href="https://gitlab.com/perm.pub/epijats">Epijats</ext-link> software package.
+  Various other tools and websites use Epijats, using the term <italic>Baseprint document
+  successions</italic>.
+  A starting point to learn more about Baseprint document successions is
+  <ext-link ext-link-type="uri" xlink:href="https://try.perm.pub">try.perm.pub</ext-link>.</p>
+</sec>
+<sec id="reference-implementations">
+  <title>Reference Implementations</title>
+  <p>The Python library <ext-link ext-link-type="uri" xlink:href="https://pypi.org/project/hidos/">Hidos</ext-link> <xref alt="1" rid="ref-hidosU003A1.3" ref-type="bibr">1</xref> and the
+  <ext-link ext-link-type="uri" xlink:href="https://manual.perm.pub">Document Succession Highly Manual Toolkit</ext-link> <xref alt="2" rid="ref-dshmtm" ref-type="bibr">2</xref> both serve as
+  reference implementations for storing document successions in a Document Succession Git
+  Layout (DSGL).</p>
+</sec>
+<sec id="scope">
+  <title>Scope</title>
+  <p>This specification assumes document successions are digitally signed.
+  <italic>Unsigned</italic> document successions are currently out of the scope of this edition of the
+  specification.
+  Though they may be useful for testing and learning purposes,
+  they are not critical to interoperability.</p>
+</sec>
+<sec id="document-successions-encoded-with-git">
+  <title>Document Successions Encoded with Git</title>
+  <sec id="initial-commit">
+    <title>Initial Commit</title>
+    <p>A document succession consists of a Git commit history with a single initial commit.
+    The base DSI of the document succession is the base64url (RFC 4648)<xref alt="3" rid="ref-rfc4648" ref-type="bibr">3</xref>
+    representation of the 20-byte binary Git hash of the initial commit.
+    A <italic>Document Succession Identifier</italic> is an
+    <ext-link ext-link-type="uri" xlink:href="https://www.softwareheritage.org/2020/07/09/intrinsic-vs-extrinsic-identifiers">intrinsic identifier</ext-link>
+    <xref alt="4" rid="ref-intrinsic_extrinsic_identifiers" ref-type="bibr">4</xref> <xref alt="5" rid="ref-cosmo_referencing_2020" ref-type="bibr">5</xref> <xref alt="6" rid="ref-dicosmoU003Ahal-01865790" ref-type="bibr">6</xref>
+    of the initial Git commit.</p>
+  </sec>
+  <sec id="signatures">
+    <title>Signatures</title>
+    <p>Every commit of a document succession must be signed with an SSH key and contain a
+    <monospace>signed_succession</monospace> subdirectory that includes an <monospace>allowed_signers</monospace> file listing the
+    public keys authorized to extend the document succession.
+    Each line in the <monospace>allowed_signers</monospace> file begins with <monospace>* namespaces=&quot;git&quot;</monospace> followed
+    by space-separated fields of keytype and base64-encoded public key as supported by
+    OpenSSH. The keytype of <monospace>ssh-ed25519</monospace> is well tested.</p>
+    <p>The initial commit must be signed with an SSH key listed in the
+    <monospace>signed_succession/allowed_signers</monospace> file.
+    Non-initial commits must be signed with an SSH key listed in the
+    <monospace>signed_succession/allowed_signers</monospace> file of every parent commit.</p>
+  </sec>
+  <sec id="editions">
+    <title>Editions</title>
+    <p>The top-level directory contains subdirectories named with non-negative integers.
+    Each subdirectory contains either an entry named <monospace>object</monospace> or entries named with non-negative integers that are subdirectories.
+    An entry named <monospace>object</monospace> encodes a document snapshot,
+    which may be a file (Git blob) or a directory (Git tree).
+    For example,
+    adding a directory as the contents of a document snapshot to be edition 1
+    results in a directory path <monospace>1/object</monospace> that corresponds to a Git tree for edition 1.</p>
+  </sec>
+  <sec id="clarifications">
+    <title>Clarifications</title>
+    <p>The Git tree of each commit does not represent a single document snapshot;
+    instead, it records all snapshots in the succession.</p>
+  </sec>
+</sec>
+<sec id="implementation-choice-rationales">
+  <title>Implementation Choice Rationales</title>
+  <sec id="separation-of-git-history-from-edition-history">
+    <title>Separation of Git History from Edition History</title>
+    <p>Representing the history of editions through means other than Git commit history
+    is a deliberate design choice.
+    Git commit history records all Git actions,
+    which can lead to inflexible and complicated non-linear histories.
+    Software Heritage automatically preserves Git commits,
+    increasing the risk that a Git commit history could become
+    an unintended complicated non-linear history.
+    Non-linear Git commit histories and merge commits might be useful in certain scenarios.</p>
+    <p>Separating edition history from Git commit history also allows
+    for future enhancements, such as retracting specific editions.</p>
+  </sec>
+  <sec id="use-of-git-tree-paths-instead-of-git-tags">
+    <title>Use of Git Tree Paths Instead of Git Tags</title>
+    <p>In document successions, edition numbers are akin to software release versions,
+    which are typically identified using Git tags.
+    However, this specification adopts a different approach.
+    Edition numbers are recorded with file paths in Git trees rather than Git tags.
+    With this approach, a single latest Git commit captures a complete record of a document succession.
+    This means copying document successions is as easy as copying Git branches.
+    This is especially useful when consolidating records from multiple sources into a single Git repository.</p>
+    <p>In contrast, software projects, which often include release tags,
+    are copied by cloning the entire repository.
+    Using Git tags for edition numbers would
+    introduce the complexity of keeping a branch and edition number tags in sync,
+    thereby increasing the risk of problems during copying.</p>
+    <p>While branches in Git repositories are useful for managing document successions,
+    branch names do not constitute a part of the document succession record.</p>
+  </sec>
+</sec>
+<sec id="acknowledgments">
+  <title>Acknowledgments</title>
+  <p>Thank you to Valentin Lorentz for raising questions about design choices
+  and pointing out an important shortcoming in how GPG digital signatures were used
+  in the initial Git implementation of the Hidos library (version 0.3) <xref alt="7" rid="ref-hidosU003A0.3" ref-type="bibr">7</xref>.</p>
+</sec>
+<sec id="history">
+  <title>History</title>
+  <list list-type="bullet">
+    <list-item>
+      <p>Copied Git storage specifics from <ext-link ext-link-type="uri" xlink:href="https://perm.pub/1wFGhvmv8XZfPx0O5Hya2e9AyXo/2.1">edition 2.1 of the DSI
+      specification</ext-link>.</p>
+    </list-item>
+  </list>
+</sec>
+</body>
+<back>
+<ref-list>
+  <title>References</title>
+  <ref id="ref-cosmo_referencing_2020">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Cosmo</surname><given-names>Roberto Di</given-names></name>
+        <name><surname>Gruenpeter</surname><given-names>Morane</given-names></name>
+        <name><surname>Zacchiroli</surname><given-names>Stefano</given-names></name>
+      </person-group>
+      <article-title>Referencing Source Code Artifacts: A Separate Concern in Software Citation</article-title>
+      <source>Computing in Science &amp; Engineering</source>
+      <year iso-8601-date="2020-03">2020</year><month>03</month>
+      <date-in-citation content-type="access-date"><year iso-8601-date="2022-09-05">2022</year><month>09</month><day>05</day></date-in-citation>
+      <volume>22</volume>
+      <issue>2</issue>
+      <issn>1521-9615, 1558-366X</issn>
+      <uri>https://ieeexplore.ieee.org/document/8946737/</uri>
+      <pub-id pub-id-type="doi">10.1109/MCSE.2019.2963148</pub-id>
+      <fpage>33</fpage>
+      <lpage>43</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-dicosmoU003Ahal-01865790">
+    <element-citation publication-type="paper-conference">
+      <person-group person-group-type="author">
+        <name><surname>Di Cosmo</surname><given-names>Roberto</given-names></name>
+        <name><surname>Gruenpeter</surname><given-names>Morane</given-names></name>
+        <name><surname>Zacchiroli</surname><given-names>Stefano</given-names></name>
+      </person-group>
+      <article-title>Identifiers for Digital Objects: the Case of Software Source Code Preservation</article-title>
+      <source>iPRES 2018 - 15th International Conference on Digital Preservation</source>
+      <publisher-loc>Boston, United States</publisher-loc>
+      <year iso-8601-date="2018-09">2018</year><month>09</month>
+      <uri>https://hal.archives-ouvertes.fr/hal-01865790</uri>
+      <fpage>1</fpage>
+      <lpage>9</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-rfc4648">
+    <element-citation publication-type="report">
+      <person-group person-group-type="author">
+        <name><surname>Josefsson</surname><given-names>S.</given-names></name>
+      </person-group>
+      <article-title>The Base16, Base32, and Base64 data encodings</article-title>
+      <publisher-name>RFC Editor; Internet Requests for Comments; RFC Editor</publisher-name>
+      <year iso-8601-date="2006-10">2006</year><month>10</month>
+      <issn>2070-1721</issn>
+      <uri>https://www.rfc-editor.org/info/rfc4648</uri>
+      <pub-id pub-id-type="doi">10.17487/RFC4648</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-intrinsic_extrinsic_identifiers">
+    <element-citation publication-type="webpage">
+      <person-group person-group-type="author">
+        <name><surname>Heritage</surname><given-names>Software</given-names></name>
+      </person-group>
+      <article-title>Intrinsic and extrinsic identifiers</article-title>
+      <year iso-8601-date="2020">2020</year>
+      <uri>https://web.archive.org/web/20221019201056/https://www.softwareheritage.org/2020/07/09/intrinsic-vs-extrinsic-identifiers/</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-hidosU003A0.3">
+    <element-citation>
+      <person-group person-group-type="author">
+        <string-name>Hidos contributors</string-name>
+      </person-group>
+      <article-title>Hidos 0.3</article-title>
+      <year iso-8601-date="2022">2022</year>
+      <uri>https://archive.softwareheritage.org/swh:1:rev:b963e5d2366724df6e8c34d864a7984ce4a2e1be;origin=https://gitlab.com/perm.pub/hidos</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-hidosU003A1.3">
+    <element-citation>
+      <person-group person-group-type="author">
+        <string-name>Hidos contributors</string-name>
+      </person-group>
+      <article-title>Hidos 1.3</article-title>
+      <year iso-8601-date="2024">2024</year>
+      <uri>https://archive.softwareheritage.org/swh:1:rev:0c997b13a255be2a83f150371c9364a1217fa91a;origin=https://gitlab.com/perm.pub/hidos</uri>
+    </element-citation>
+  </ref>
+  <ref id="ref-dshmtm">
+    <element-citation>
+      <person-group person-group-type="author">
+        <string-name>DSHMTM contributors</string-name>
+      </person-group>
+      <article-title>Document succession highly manual toolkit manual</article-title>
+      <year iso-8601-date="2024">2024</year>
+      <uri>https://archive.softwareheritage.org/swh:1:rev:f6da04dce5f53d88c4c324c1d2546110a8d42d8a;origin=https://gitlab.com/perm.pub/dshmtm</uri>
+    </element-citation>
+  </ref>
+</ref-list>
+</back>
+</article>
