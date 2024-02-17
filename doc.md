@@ -1,18 +1,26 @@
 <!-- copybreak off -->
 
 ---
-title: "Document Succession Git Layout Specification"
+title: "Document Succession Git Layout"
 date: 2024-02-14
 abstract: |
     **DOCUMENT TYPE**: Living Technical Specification
 
-    This specification documents a storage scheme for
-    document successions and snapshots that are identifiable by
-    [Document Succession Identifiers](https://perm.pub/1wFGhvmv8XZfPx0O5Hya2e9AyXo).
-    This storage scheme is implemented through Git commit records.
-    This specification is descriptive of a Git layout that interoperates with the Hidos
-    software package version 1.3 and the Document Succession Highly Manual Toolkit.
+    A document succession is a distributed, correctable document that preserves document
+    snapshots as editions, which can be individually referenced.
+    The Document Succession Git Layout (DSGL) is a format for storing document successions
+    within a Git object store.
+    DSGL bridges two related formats: the textual representation of
+    [Document Succession Identifiers (DSI)](https://perm.pub/1wFGhvmv8XZfPx0O5Hya2e9AyXo)
+    and the storage format for document snapshots.
+    An example of a snapshot format is the format for Baseprint document snapshots;
+    however, this specification does not define any specific format for document snapshots.
+    This DSGL specification details a Git storage layout that interoperates with the
+    [Hidos Python package](https://pypi.org/project/hidos/) version 1.3 and the [Document
+    Succession Highly Manual Toolkit](https://manual.perm.pub).
 ---
+
+<!-- copybreak off -->
 
 ## Introduction
 
@@ -33,8 +41,8 @@ document snapshot format which can be encoded as a Git blob or Git tree.
 
 As of early 2024, the only document snapshot format implemented is
 with the [Epijats](https://gitlab.com/perm.pub/epijats) software package.
-Various other tools and websites use Epijats, using the term *Baseprint document
-successions*.
+Various other tools and websites use Epijats,
+using the term *Baseprint document successions*.
 A starting point to learn more about Baseprint document successions is
 [try.perm.pub](https://try.perm.pub).
 
