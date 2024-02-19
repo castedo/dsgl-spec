@@ -2,7 +2,7 @@
 
 ---
 title: "Document Succession Git Layout"
-date: 2024-02-14
+date: 2024-02-19
 abstract: |
     **DOCUMENT TYPE**: Living Technical Specification
 
@@ -15,16 +15,13 @@ abstract: |
     and the storage format for document snapshots.
     An example of a snapshot format is the format for Baseprint document snapshots;
     however, this specification does not define any specific format for document snapshots.
-    This DSGL specification details a Git storage layout that interoperates with the
-    [Hidos Python package](https://pypi.org/project/hidos/) version 1.3 and the [Document
-    Succession Highly Manual Toolkit](https://manual.perm.pub).
 ---
 
-<!-- copybreak on -->
+<!-- copybreak off -->
 
 ## Background
 
-Websites, such as [https://perm.pub](https://perm.pub),
+Websites like [https://perm.pub](https://perm.pub)
 use free open-source software, such as the Python package
 [Epijats](https://gitlab.com/perm.pub/epijats),
 to process the formats of
@@ -35,39 +32,41 @@ For the motivation behind these technologies,
 refer to [Why Publish Baseprint Document Successions](
 https://perm.pub/wk1LzCaCSKkIvLAYObAvaoLNGPc
 ).
-Tutorials and introductory material are also available at
+Tutorials and introductory materials are also available at
 [https://try.perm.pub/](https://try.perm.pub).
 
 <!-- copybreak off -->
 
 ## Scope
 
-This document is a specification of DSGL that interoperates with these reference
-implementations:
+This document is a specification of DSGL for interoperability with the following
+reference implementations:
 
 * the Python package [Hidos](https://pypi.org/project/hidos/) [@hidos:1.3] and
 * the [Document Succession Highly Manual Toolkit](https://manual.perm.pub) [@dshmtm].
 
-This specification does not include potential DSGL feature that are not implemented in
+This specification excludes potential DSGL features that are not implemented in
 any software.
 The online forum <https://baseprints.singlesource.pub> is available for proposals
-of improvements to this living specification and reference implementations.
+of improvements to this living specification and its reference implementations.
+
+DSI in this specification refers to [edition 2 of the Document Succession
+Identifier specification](https://perm.pub/1wFGhvmv8XZfPx0O5Hya2e9AyXo/2).
 
 ### Signed Successions
 
-This specification is for document successions that are digitally signed.
-*Unsigned* document successions are out of the scope for this edition of the
+This specification focuses on document successions that are digitally signed.
+*Unsigned* document successions fall outside the scope of this edition of the
 DSGL specification.
-Unsigned document successions can be useful for testing and learning purposes,
-but are not critical to interoperability.
+While unsigned document successions may be useful for testing and learning,
+they are not essential for interoperability.
 
 ### Ungarbled Successions
 
-This specification is for a definition of DSGL for *ungarbled* recordings.
-An *ungarbled* recording is most likely to interoperate and is intuitively the
-ideal way one would record the data of a document succession. 
-Reality and non-ideal circumstances sometimes result in *garbled* recordings.
-Implemented software will be able to deal with *garbled* recordings to varying levels of satisfaction.
+This specification defines DSGL for *ungarbled* recordings.
+These *ungarbled* recordings, which have a simple and intuitive format, are most likely to interoperate.
+Reality and non-ideal circumstances sometimes result in *garbled* recordings,
+which software may handle with varying degrees of success.
 This specification assumes document successions are *ungarbled*, unless otherwise noted.
 
 <!-- copybreak off -->
@@ -83,59 +82,44 @@ An *ungarbled* document succession has a linear Git commit history.
 
 ### Signatures
 
-Every commit tree contain a `signed_succession` subdirectory
+Every Git commit tree in DSGL contains a `signed_succession` subdirectory
 that includes an `allowed_signers` file listing the public keys
 allowed to extend the document succession.
-Each line in the `allowed_signers` file begins with `* namespaces="git" ` followed by
-space-separated fields of a keytype and a base64-encoded public key
-as supported by OpenSSH.
-The keytype of `ssh-ed25519` is well tested, broadly adopted, and featured in the
-[Document Succession Highly Manual Toolkit Manual](https://manual.perm.pub) [@dshmtm].
-
-The initial commit is signed with an SSH key that is listed in the `allowed_signers` file.
 Each non-initial commit is signed with an SSH key listed in the `allowed_signers` files of
-all of its parent commits.
+all its parent commits.
 
-**Example** : Initial Git commit in DSGL.
+**Example**: Initial Git commit in DSGL.
 
 > <https://github.com/document-succession/1wFGhvmv8XZfPx0O5Hya2e9AyXo/commit/d7014686f9aff1765f3f1d0ee47c9ad9ef40c97a>
 
 > <https://archive.softwareheritage.org/swh:1:rev:d7014686f9aff1765f3f1d0ee47c9ad9ef40c97a>
 
+<!-- copybreak off -->
 
 ### Document Snapshot
 
-A document snapshot in DSGL is any digital object
-that can be encoded as either a Git blob or Git tree.
-The contents of each document snapshot are stored in a Git commit tree with a path
-consisting of the edition number tuple components separated by slashes and then the
-file/directory name `object`.
+A document snapshot in DSGL is a digital object
+that can be encoded as either a Git blob or a Git tree.
+The contents of each document snapshot are stored in an entry named `object` within a
+containing Git tree.
+The full path from the Git commit tree mirrors the edition number,
+with slashes separating integers instead of periods.
 For example,
-a directory as the contents of a document snapshot that is edition 1
-is stored at a directory path `1/object` that corresponds to a Git tree.
+the directory containing the contents of a document snapshot for edition 2.1
+would be stored in a Git tree at the path `2/1/object`.
 
-Every document snapshot in a document succession has an edition number tuple that ends
-in a positive integer.
-For instance, `10` is a valid edition number whereas `1.0` is not.
-Formally, the edition number `10` is the tuple `(10)` and `1.0` is the tuple `(1,0)`.
+**Example**: Git commit tree of document succession with edition 2.1.
 
-For each edition number, the first commit that stores the document snapshot 
-is the only valid data for that edition number.
-An ungarbled document succession only has one commit that sets the document snapshot
-assigned to an edition number.
-If a subsequent commit stores a different document snapshot at the path of a previously
-store edition path,
-it does not change what is the correct value of the edition in the document succession.
+> <https://github.com/document-succession/1wFGhvmv8XZfPx0O5Hya2e9AyXo/tree/f174a4f4cc3076b0f46980878c4208cbfcdb990b>
 
-> Hidos 1.3 will automatically return only the first document snapshot committed and
-> will ignore invalid snapshots of subsequent commits.
+> <https://archive.softwareheritage.org/swh:1:dir:361534f2bcf78e6312a32916469e4720c7c9bb6f>
 
 <!-- copybreak off -->
 
 Formal Definitions
 ------------------
 
-### Criteria for a document succession in DSGL
+### Criteria for a Document Succession in DSGL
 
 **Criterion**:
 The data of a document succession are fully recorded by a connected graph of Git commit
@@ -151,36 +135,38 @@ All document snapshots are stored as a Git blob or Git tree with the name `objec
 (in its containing Git tree).
 
 **Criterion**:
-The Git tree containing an `object` entry for a document snapshot is not
-the top-level Git commit tree and it named with a positive integer.
+The Git tree containing an `object` entry is not
+the top-level Git commit tree and is named with a positive integer.
 
 **Criterion**:
 The full path to the containing tree of an `object` entry for a document snapshot
 consists of non-negative integers separated by slashes.
-These non-negative integer correspond to the non-negative integers separated
-by stops (periods) in the DSI.
+These non-negative integers correspond to the non-negative integers separated
+by periods in the DSI.
 
 **Criterion**:
 The document snapshot assigned to an edition number is the first Git blob or tree
 committed to an `object` entry following the path corresponding to the edition number.
 Any subsequent `object` entries at this path do not change the DSI assignment.
 
-### Criteria for a **signed** document succession in DSGL
+### Criteria for a **Signed** Document Succession in DSGL
 
 **Criterion**:
 The Git tree of every Git commit record has an `allowed_signers` file within the
 `signed_succession` directory.
 
 **Criterion**:
-The `allowed_signers` file consists of zero or more lines of four space-separated
-fields. The second field is `namespaces="git"`, the third field is an OpenSSH compatible
-keytype and the fourth field is a base64-encoded public key.
+The `allowed_signers` file consists of zero or more lines of four fields separated by
+space.
+The second field is `namespaces="git"`,
+the third field is an OpenSSH compatible key type, and the fourth field is a
+base64-encoded public key.
 
 **Criterion**:
 Every commit with parents is signed with an SSH key with the public key
 listed in the `allowed_signers` file of all parent commits.
 
-### Criteria for an **ungarbled** document succession in DSGL
+### Criteria for an **Ungarbled** Document Succession in DSGL
 
 **Criterion**:
 The graph of Git commit records is linear.
@@ -193,7 +179,7 @@ file within the `signed_succession` directory.
 The first field of all lines in the `allowed_signers` files is the character `*`.
 
 **Criterion**:
-The third field of all lines in the `allowed_signers` files is the keytype
+The third field of all lines in the `allowed_signers` files is the key type
 `ssh-ed25519`.
 
 **Criterion**:
@@ -207,7 +193,9 @@ Every `object` entry is only added once in the commit history.
 There are no two `object` entries whose paths correspond to edition numbers that are
 above or below each other (for example, `1/object` and `1/2/object` are not both
 present).
-
+In other words,
+if a Git tree directly contains an `object` entry,
+then it is the only direct entry in that Git tree.
 
 ### DSGL Paths in Extended Backus—Naur Form
 
@@ -221,11 +209,19 @@ pos_int ::= pos_dec_digit ( [ dec_digit ] * 3 ) ;
 dec_digit := "0" | pos_dec_digit;
 pos_dec_digit := "1" ... "9" ;
 ```
-
 <!-- copybreak off -->
 
 Discussion
 ----------
+
+### Control of Document Successions
+
+As long as authors of document successions maintain control over the allowed private SSH
+signing keys,
+a signed document succession can be moved and distributed across any Git-compatible servers,
+yet only the authors can extend the document succession with new editions.
+The capability to extend a signed document succession hinges on control of the allowed private SSH signing key,
+rather than control over specific accounts or servers.
 
 ### Related Concepts
 
