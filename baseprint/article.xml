@@ -78,7 +78,7 @@ Succession Highly Manual Toolkit</ext-link>.</p>
   implementations:</p>
   <list list-type="bullet">
     <list-item>
-      <p>the Python library <ext-link ext-link-type="uri" xlink:href="https://pypi.org/project/hidos/">Hidos</ext-link> <xref alt="1" rid="ref-hidosU003A1.3" ref-type="bibr">1</xref> and</p>
+      <p>the Python package <ext-link ext-link-type="uri" xlink:href="https://pypi.org/project/hidos/">Hidos</ext-link> <xref alt="1" rid="ref-hidosU003A1.3" ref-type="bibr">1</xref> and</p>
     </list-item>
     <list-item>
       <p>the <ext-link ext-link-type="uri" xlink:href="https://manual.perm.pub">Document Succession Highly Manual Toolkit</ext-link> <xref alt="2" rid="ref-dshmtm" ref-type="bibr">2</xref>.</p>
@@ -153,25 +153,6 @@ Succession Highly Manual Toolkit</ext-link>.</p>
       will ignore invalid snapshots of subsequent commits.</p>
     </disp-quote>
   </sec>
-</sec>
-<sec id="formal-model">
-  <title>Formal Model</title>
-  <p>Git records in DSGL contain much Git-specific information
-  that does not constitute the essential information of a document succession.
-  The following formal model captures the essential information of a document
-  succession.</p>
-  <p>Mathematically this model is a pair <monospace>(B, M)</monospace> where <monospace>B</monospace> is the base document succession
-  identifier and <monospace>M</monospace> is a mapping from edition numbers to document snapshots.
-  The base identifier <monospace>B</monospace> corresponds to the base DSI and the 20-byte Git hash of the
-  initial commit.
-  The domain of the mapping ‘M’ is a set of edition numbers which mathematically are
-  defined as non-empty tuples of non-negative integers.
-  The <ext-link ext-link-type="uri" xlink:href="https://perm.pub/1wFGhvmv8XZfPx0O5Hya2e9AyXo">DSI specification)</ext-link>
-  places additional restrictions on what domain of edition numbers are valid.
-  The range of <monospace>M</monospace> consists of a set of digital objects that encode the document snapshots.
-  Any document snapshot that can be encoded as a Git blog or Git tree is compatible with
-  this model.
-  Git blobs and Git trees are supported by the core SWHIDs of <monospace>swh:1:cnt:</monospace> and <monospace>swh:1:dir:</monospace>.</p>
 </sec>
 <sec id="discussion">
   <title>Discussion</title>
