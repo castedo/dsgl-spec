@@ -90,7 +90,7 @@ Succession Highly Manual Toolkit</ext-link>.</p>
   of improvements to this living specification and reference implementations.</p>
   <sec id="signed-successions">
     <title>Signed Successions</title>
-    <p>This specification is for document successions are digitally signed.
+    <p>This specification is for document successions that are digitally signed.
     <italic>Unsigned</italic> document successions are out of the scope for this edition of the
     DSGL specification.
     Unsigned document successions can be useful for testing and learning purposes,
@@ -106,8 +106,8 @@ Succession Highly Manual Toolkit</ext-link>.</p>
     This specification assumes document successions are <italic>ungarbled</italic>, unless otherwise noted.</p>
   </sec>
 </sec>
-<sec id="layout-definition">
-  <title>Layout Definition</title>
+<sec id="informal-description">
+  <title>Informal Description</title>
   <sec id="initial-git-commit">
     <title>Initial Git Commit</title>
     <p>A document succession consists of a Git commit history with a single initial commit.
@@ -117,34 +117,43 @@ Succession Highly Manual Toolkit</ext-link>.</p>
   </sec>
   <sec id="signatures">
     <title>Signatures</title>
-    <p>Every commit tree contain a
-    <monospace>signed_succession</monospace> subdirectory that includes an <monospace>allowed_signers</monospace> file listing the
-    public keys allowed to extend the document succession.
+    <p>Every commit tree contain a <monospace>signed_succession</monospace> subdirectory
+    that includes an <monospace>allowed_signers</monospace> file listing the public keys
+    allowed to extend the document succession.
     Each line in the <monospace>allowed_signers</monospace> file begins with <monospace>* namespaces=&quot;git&quot;</monospace> followed by
-    space-separated fields of a keytype and a base64-encoded public key as supported by OpenSSH.
+    space-separated fields of a keytype and a base64-encoded public key
+    as supported by OpenSSH.
     The keytype of <monospace>ssh-ed25519</monospace> is well tested, broadly adopted, and featured in the
     <ext-link ext-link-type="uri" xlink:href="https://manual.perm.pub">Document Succession Highly Manual Toolkit Manual</ext-link> <xref alt="2" rid="ref-dshmtm" ref-type="bibr">2</xref>.</p>
     <p>The initial commit is signed with an SSH key that is listed in the <monospace>allowed_signers</monospace> file.
     Each non-initial commit is signed with an SSH key listed in the <monospace>allowed_signers</monospace> files of
     all of its parent commits.</p>
+    <p><bold>Example</bold> : Initial Git commit in DSGL.</p>
+    <disp-quote>
+      <p><ext-link ext-link-type="uri" xlink:href="https://github.com/document-succession/1wFGhvmv8XZfPx0O5Hya2e9AyXo/commit/d7014686f9aff1765f3f1d0ee47c9ad9ef40c97a">https://github.com/document-succession/1wFGhvmv8XZfPx0O5Hya2e9AyXo/commit/d7014686f9aff1765f3f1d0ee47c9ad9ef40c97a</ext-link></p>
+    </disp-quote>
+    <disp-quote>
+      <p><ext-link ext-link-type="uri" xlink:href="https://archive.softwareheritage.org/swh:1:rev:d7014686f9aff1765f3f1d0ee47c9ad9ef40c97a">https://archive.softwareheritage.org/swh:1:rev:d7014686f9aff1765f3f1d0ee47c9ad9ef40c97a</ext-link></p>
+    </disp-quote>
   </sec>
   <sec id="document-snapshot">
     <title>Document Snapshot</title>
-    <p>A document snapshot is any digital object that can be encoded as a Git blob or Git tree.
-    Every document snapshot in a document succession has an edition number tuple that ends
-    in a positive integer.
-    For instance, <monospace>10</monospace> is a valid edition number whereas <monospace>1.0</monospace> is not.
-    Formally, the edition number <monospace>10</monospace> is the tuple <monospace>(10)</monospace> and <monospace>1.0</monospace> is the tuple <monospace>(1,0)</monospace>.</p>
-    <p>The contents of each document snapshot are stored in a Git commit tree with a path
+    <p>A document snapshot in DSGL is any digital object
+    that can be encoded as either a Git blob or Git tree.
+    The contents of each document snapshot are stored in a Git commit tree with a path
     consisting of the edition number tuple components separated by slashes and then the
     file/directory name <monospace>object</monospace>.
     For example,
     a directory as the contents of a document snapshot that is edition 1
     is stored at a directory path <monospace>1/object</monospace> that corresponds to a Git tree.</p>
+    <p>Every document snapshot in a document succession has an edition number tuple that ends
+    in a positive integer.
+    For instance, <monospace>10</monospace> is a valid edition number whereas <monospace>1.0</monospace> is not.
+    Formally, the edition number <monospace>10</monospace> is the tuple <monospace>(10)</monospace> and <monospace>1.0</monospace> is the tuple <monospace>(1,0)</monospace>.</p>
     <p>For each edition number, the first commit that stores the document snapshot
     is the only valid data for that edition number.
     An ungarbled document succession only has one commit that sets the document snapshot
-    assigned to a edition number.
+    assigned to an edition number.
     If a subsequent commit stores a different document snapshot at the path of a previously
     store edition path,
     it does not change what is the correct value of the edition in the document succession.</p>
@@ -152,6 +161,79 @@ Succession Highly Manual Toolkit</ext-link>.</p>
       <p>Hidos 1.3 will automatically return only the first document snapshot committed and
       will ignore invalid snapshots of subsequent commits.</p>
     </disp-quote>
+  </sec>
+</sec>
+<sec id="formal-definitions">
+  <title>Formal Definitions</title>
+  <sec id="criteria-for-a-document-succession-in-dsgl">
+    <title>Criteria for a document succession in DSGL</title>
+    <p><bold>Criterion</bold>:
+    The data of a document succession are fully recorded by a connected graph of Git commit
+    records.</p>
+    <p><bold>Criterion</bold>:
+    There is only one initial Git commit (a commit without parents) in the graph of Git
+    commit records. The 20-byte binary hash of this initial Git commit is the hash
+    used for the base DSI of the document succession.</p>
+    <p><bold>Criterion</bold>:
+    All document snapshots are stored as a Git blob or Git tree with the name <monospace>object</monospace>
+    (in its containing Git tree).</p>
+    <p><bold>Criterion</bold>:
+    The Git tree containing an <monospace>object</monospace> entry for a document snapshot is not
+    the top-level Git commit tree and it named with a positive integer.</p>
+    <p><bold>Criterion</bold>:
+    The full path to the containing tree of an <monospace>object</monospace> entry for a document snapshot
+    consists of non-negative integers separated by slashes.
+    These non-negative integer correspond to the non-negative integers separated
+    by stops (periods) in the DSI.</p>
+    <p><bold>Criterion</bold>:
+    The document snapshot assigned to an edition number is the first Git blob or tree
+    committed to an <monospace>object</monospace> entry following the path corresponding to the edition number.
+    Any subsequent <monospace>object</monospace> entries at this path do not change the DSI assignment.</p>
+  </sec>
+  <sec id="criteria-for-a-signed-document-succession-in-dsgl">
+    <title>Criteria for a <bold>signed</bold> document succession in DSGL</title>
+    <p><bold>Criterion</bold>:
+    The Git tree of every Git commit record has an <monospace>allowed_signers</monospace> file within the
+    <monospace>signed_succession</monospace> directory.</p>
+    <p><bold>Criterion</bold>:
+    The <monospace>allowed_signers</monospace> file consists of zero or more lines of four space-separated
+    fields. The second field is <monospace>namespaces=&quot;git&quot;</monospace>, the third field is an OpenSSH compatible
+    keytype and the fourth field is a base64-encoded public key.</p>
+    <p><bold>Criterion</bold>:
+    Every commit with parents is signed with an SSH key with the public key
+    listed in the <monospace>allowed_signers</monospace> file of all parent commits.</p>
+  </sec>
+  <sec id="criteria-for-an-ungarbled-document-succession-in-dsgl">
+    <title>Criteria for an <bold>ungarbled</bold> document succession in DSGL</title>
+    <p><bold>Criterion</bold>:
+    The graph of Git commit records is linear.</p>
+    <p><bold>Criterion</bold>:
+    The initial commit is signed with an SSH key that is listed in the <monospace>allowed_signers</monospace>
+    file within the <monospace>signed_succession</monospace> directory.</p>
+    <p><bold>Criterion</bold>:
+    The first field of all lines in the <monospace>allowed_signers</monospace> files is the character <monospace>*</monospace>.</p>
+    <p><bold>Criterion</bold>:
+    The third field of all lines in the <monospace>allowed_signers</monospace> files is the keytype
+    <monospace>ssh-ed25519</monospace>.</p>
+    <p><bold>Criterion</bold>:
+    All paths of all Git commit trees match the EBNF grammar for DSGL Paths (definition
+    follows).</p>
+    <p><bold>Criterion</bold>:
+    Every <monospace>object</monospace> entry is only added once in the commit history.</p>
+    <p><bold>Criterion</bold>:
+    There are no two <monospace>object</monospace> entries whose paths correspond to edition numbers that are
+    above or below each other (for example, <monospace>1/object</monospace> and <monospace>1/2/object</monospace> are not both
+    present).</p>
+  </sec>
+  <sec id="dsgl-paths-in-extended-backusnaur-form">
+    <title>DSGL Paths in Extended Backus—Naur Form</title>
+    <p>Note that <monospace>[ x ] * N</monospace> matches zero to N repetitions of <monospace>x</monospace>.</p>
+    <preformat>path ::= &quot;signed_succession/allowed_signers&quot; | snapshot
+snapshot ::= ( [ non_neg_int &quot;/&quot; ] * 3 ) pos_int &quot;/object&quot; ;
+non_neg_int ::= &quot;0&quot; | pos_int ;
+pos_int ::= pos_dec_digit ( [ dec_digit ] * 3 ) ;
+dec_digit := &quot;0&quot; | pos_dec_digit;
+pos_dec_digit := &quot;1&quot; ... &quot;9&quot; ;</preformat>
   </sec>
 </sec>
 <sec id="discussion">
