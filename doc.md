@@ -45,7 +45,7 @@ Tutorials and introductory material are also available at
 This document is a specification of DSGL that interoperates with these reference
 implementations:
 
-* the Python library [Hidos](https://pypi.org/project/hidos/) [@hidos:1.3] and
+* the Python package [Hidos](https://pypi.org/project/hidos/) [@hidos:1.3] and
 * the [Document Succession Highly Manual Toolkit](https://manual.perm.pub) [@dshmtm].
 
 This specification does not include potential DSGL feature that are not implemented in
@@ -120,28 +120,6 @@ it does not change what is the correct value of the edition in the document succ
 
 > Hidos 1.3 will automatically return only the first document snapshot committed and
 > will ignore invalid snapshots of subsequent commits.
-
-<!-- copybreak off -->
-
-## Formal Model
-
-Git records in DSGL contain much Git-specific information
-that does not constitute the essential information of a document succession.
-The following formal model captures the essential information of a document
-succession.
-
-Mathematically this model is a pair `(B, M)` where `B` is the base document succession
-identifier and `M` is a mapping from edition numbers to document snapshots.
-The base identifier `B` corresponds to the base DSI and the 20-byte Git hash of the
-initial commit.
-The domain of the mapping 'M' is a set of edition numbers which mathematically are
-defined as non-empty tuples of non-negative integers.
-The [DSI specification)](https://perm.pub/1wFGhvmv8XZfPx0O5Hya2e9AyXo)
-places additional restrictions on what domain of edition numbers are valid.
-The range of `M` consists of a set of digital objects that encode the document snapshots.
-Any document snapshot that can be encoded as a Git blog or Git tree is compatible with
-this model.
-Git blobs and Git trees are supported by the core SWHIDs of `swh:1:cnt:` and `swh:1:dir:`.
 
 <!-- copybreak off -->
 
