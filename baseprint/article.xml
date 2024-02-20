@@ -26,8 +26,8 @@
 <email>castedo@castedo.com</email>
 </contrib>
 </contrib-group>
-<pub-date date-type="pub" publication-format="electronic" iso-8601-date="2024-02-19">
-<day>19</day>
+<pub-date date-type="pub" publication-format="electronic" iso-8601-date="2024-02-20">
+<day>20</day>
 <month>2</month>
 <year>2024</year>
 </pub-date>
@@ -75,7 +75,7 @@ however, this specification does not define any specific format for document sna
   reference implementations:</p>
   <list list-type="bullet">
     <list-item>
-      <p>the Python package <ext-link ext-link-type="uri" xlink:href="https://pypi.org/project/hidos/">Hidos</ext-link> <xref alt="1" rid="ref-hidosU003A1.3" ref-type="bibr">1</xref> and</p>
+      <p>the Python package <ext-link ext-link-type="uri" xlink:href="https://pypi.org/project/hidos/">Hidos</ext-link> version 1.3 <xref alt="1" rid="ref-hidosU003A1.3" ref-type="bibr">1</xref> and</p>
     </list-item>
     <list-item>
       <p>the <ext-link ext-link-type="uri" xlink:href="https://manual.perm.pub">Document Succession Highly Manual Toolkit</ext-link> <xref alt="2" rid="ref-dshmtm" ref-type="bibr">2</xref>.</p>
@@ -203,7 +203,7 @@ however, this specification does not define any specific format for document sna
     The third field of all lines in the <monospace>allowed_signers</monospace> files is the key type
     <monospace>ssh-ed25519</monospace>.</p>
     <p><bold>Criterion</bold>:
-    All paths of all Git commit trees match the ABNF grammar for DSGL Paths (definition
+    All paths of all Git commit trees match the EBNF grammar for DSGL Paths (definition
     follows).</p>
     <p><bold>Criterion</bold>:
     Every <monospace>object</monospace> entry is only added once in the commit history.</p>
@@ -215,18 +215,17 @@ however, this specification does not define any specific format for document sna
     if a Git tree directly contains an <monospace>object</monospace> entry,
     then it is the only direct entry in that Git tree.</p>
   </sec>
-  <sec id="dsgl-paths-in-augmented-backusnaur-form-abnf">
-    <title>DSGL Paths in Augmented Backus—Naur Form (ABNF)</title>
-    <p>The following grammar is expressed in an extended Augmented Backus—Naur Form from
-    <ext-link ext-link-type="uri" xlink:href="https://www.rfc-editor.org/info/rfc5234">RFC5234</ext-link> <xref alt="4" rid="ref-rfc5234" ref-type="bibr">4</xref>
-    with the vertical bar (<monospace>|</monospace>) synonymous with the slash (<monospace>/</monospace>) for matching alternatives,
-    and ellipsis (<monospace>…</monospace>) matching any ASCII character in a range.</p>
-    <preformat>path = &quot;signed_succession/allowed_signers&quot; | snapshot
-snapshot = *(non_neg_int &quot;/&quot;) pos_int &quot;/object&quot;
-non_neg_int = &quot;0&quot; | pos_int
-pos_int = pos_dec_digit *(dec_digit)
-dec_digit = &quot;0&quot; | pos_dec_digit
-pos_dec_digit = &quot;1&quot;…&quot;9&quot;</preformat>
+  <sec id="dsgl-paths-in-extended-backusnaur-form-ebnf">
+    <title>DSGL Paths in Extended Backus—Naur Form (EBNF)</title>
+    <p>The following grammar is expressed in ISO/IEC 14977
+    <ext-link ext-link-type="uri" xlink:href="https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form">Extended Backus—Naur Form (EBNF)</ext-link>
+    extended further to allow an ellipsis (<monospace>…</monospace>) to denote a range of ASCII characters.</p>
+    <preformat>path = &quot;signed_succession/allowed_signers&quot; | snapshot ;
+snapshot = { non_neg_int, &quot;/&quot; }, pos_int, &quot;/object&quot; ;
+non_neg_int = &quot;0&quot; | pos_int ;
+pos_int = pos_dec_digit, { dec_digit } ;
+dec_digit = &quot;0&quot; | pos_dec_digit ;
+pos_dec_digit = &quot;1&quot;…&quot;9&quot; ;</preformat>
   </sec>
 </sec>
 <sec id="discussion">
@@ -237,14 +236,14 @@ pos_dec_digit = &quot;1&quot;…&quot;9&quot;</preformat>
     signing keys,
     a signed document succession can be moved and distributed across any Git-compatible servers,
     yet only the authors can extend the document succession with new editions.
-    The capability to extend a signed document succession hinges on control of the allowed private SSH signing key,
+    The capability to extend a signed document succession hinges on control of allowed private SSH signing keys,
     rather than control over specific accounts or servers.</p>
   </sec>
   <sec id="related-concepts">
     <title>Related Concepts</title>
     <p>A <italic>Document Succession Identifier</italic> is an
     <ext-link ext-link-type="uri" xlink:href="https://www.softwareheritage.org/2020/07/09/intrinsic-vs-extrinsic-identifiers">intrinsic identifier</ext-link>
-    <xref alt="5" rid="ref-intrinsic_extrinsic_identifiers" ref-type="bibr">5</xref> <xref alt="6" rid="ref-cosmo_referencing_2020" ref-type="bibr">6</xref> <xref alt="7" rid="ref-dicosmoU003Ahal-01865790" ref-type="bibr">7</xref>
+    <xref alt="4" rid="ref-intrinsic_extrinsic_identifiers" ref-type="bibr">4</xref> <xref alt="5" rid="ref-cosmo_referencing_2020" ref-type="bibr">5</xref> <xref alt="6" rid="ref-dicosmoU003Ahal-01865790" ref-type="bibr">6</xref>
     of the initial Git commit.</p>
   </sec>
   <sec id="design-choice-rationales">
@@ -285,8 +284,8 @@ pos_dec_digit = &quot;1&quot;…&quot;9&quot;</preformat>
   <title>Acknowledgments</title>
   <p>Thank you to Valentin Lorentz for raising questions about design choices
   and pointing out an important shortcoming in how GPG digital signatures were used
-  in the initial Git implementation of the Hidos library (version 0.3) <xref alt="8" rid="ref-hidosU003A0.3" ref-type="bibr">8</xref>.</p>
-  <p>This document has been copyedited with <ext-link ext-link-type="uri" xlink:href="https://copyaid.it">https://copyaid.it</ext-link> using OpenAI GPT.</p>
+  in the initial Git implementation of the Hidos library (version 0.3) <xref alt="7" rid="ref-hidosU003A0.3" ref-type="bibr">7</xref>.</p>
+  <p>This document has been copyedited with AI using <ext-link ext-link-type="uri" xlink:href="https://copyaid.it">https://copyaid.it</ext-link>.</p>
 </sec>
 <sec id="history">
   <title>History</title>
@@ -388,19 +387,6 @@ pos_dec_digit = &quot;1&quot;…&quot;9&quot;</preformat>
       <article-title>Document succession highly manual toolkit manual</article-title>
       <year iso-8601-date="2024">2024</year>
       <uri>https://archive.softwareheritage.org/swh:1:rev:f6da04dce5f53d88c4c324c1d2546110a8d42d8a;origin=https://gitlab.com/perm.pub/dshmtm</uri>
-    </element-citation>
-  </ref>
-  <ref id="ref-rfc5234">
-    <element-citation>
-      <person-group person-group-type="author">
-        <name><surname>Crocker</surname><given-names>Dave</given-names></name>
-        <name><surname>Overell</surname><given-names>Paul</given-names></name>
-      </person-group>
-      <article-title>Augmented BNF for Syntax Specifications: ABNF</article-title>
-      <publisher-name>RFC 5234; RFC Editor</publisher-name>
-      <year iso-8601-date="2008-01">2008</year><month>01</month>
-      <uri>https://www.rfc-editor.org/info/rfc5234</uri>
-      <pub-id pub-id-type="doi">10.17487/RFC5234</pub-id>
     </element-citation>
   </ref>
 </ref-list>

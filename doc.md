@@ -2,7 +2,7 @@
 
 ---
 title: "Document Succession Git Layout"
-date: 2024-02-19
+date: 2024-02-20
 abstract: |
     **DOCUMENT TYPE**: Living Technical Specification
 
@@ -42,7 +42,7 @@ Tutorials and introductory materials are also available at
 This document is a specification of DSGL for interoperability with the following
 reference implementations:
 
-* the Python package [Hidos](https://pypi.org/project/hidos/) [@hidos:1.3] and
+* the Python package [Hidos](https://pypi.org/project/hidos/) version 1.3 [@hidos:1.3] and
 * the [Document Succession Highly Manual Toolkit](https://manual.perm.pub) [@dshmtm].
 
 This specification excludes potential DSGL features that are not implemented in
@@ -183,7 +183,7 @@ The third field of all lines in the `allowed_signers` files is the key type
 `ssh-ed25519`.
 
 **Criterion**:
-All paths of all Git commit trees match the ABNF grammar for DSGL Paths (definition
+All paths of all Git commit trees match the EBNF grammar for DSGL Paths (definition
 follows).
 
 **Criterion**:
@@ -199,20 +199,19 @@ then it is the only direct entry in that Git tree.
 
 <!-- copybreak off -->
 
-### DSGL Paths in Augmented Backus—Naur Form (ABNF)
+### DSGL Paths in Extended Backus—Naur Form (EBNF)
 
-The following grammar is expressed in an extended Augmented Backus—Naur Form from
-[RFC5234](https://www.rfc-editor.org/info/rfc5234) [@rfc5234]
-with the vertical bar (`|`) synonymous with the slash (`/`) for matching alternatives,
-and ellipsis (`…`) matching any ASCII character in a range.
+The following grammar is expressed in ISO/IEC 14977
+[Extended Backus—Naur Form (EBNF)](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form)
+extended further to allow an ellipsis (`…`) to denote a range of ASCII characters.
 
 ```
-path = "signed_succession/allowed_signers" | snapshot
-snapshot = *(non_neg_int "/") pos_int "/object"
-non_neg_int = "0" | pos_int
-pos_int = pos_dec_digit *(dec_digit)
-dec_digit = "0" | pos_dec_digit
-pos_dec_digit = "1"…"9"
+path = "signed_succession/allowed_signers" | snapshot ;
+snapshot = { non_neg_int, "/" }, pos_int, "/object" ;
+non_neg_int = "0" | pos_int ;
+pos_int = pos_dec_digit, { dec_digit } ;
+dec_digit = "0" | pos_dec_digit ;
+pos_dec_digit = "1"…"9" ;
 ```
 <!-- copybreak off -->
 
@@ -225,7 +224,7 @@ As long as authors of document successions maintain control over the allowed pri
 signing keys,
 a signed document succession can be moved and distributed across any Git-compatible servers,
 yet only the authors can extend the document succession with new editions.
-The capability to extend a signed document succession hinges on control of the allowed private SSH signing key,
+The capability to extend a signed document succession hinges on control of allowed private SSH signing keys,
 rather than control over specific accounts or servers.
 
 ### Related Concepts
@@ -280,7 +279,7 @@ Thank you to Valentin Lorentz for raising questions about design choices
 and pointing out an important shortcoming in how GPG digital signatures were used
 in the initial Git implementation of the Hidos library (version 0.3) [@hidos:0.3].
 
-This document has been copyedited with <https://copyaid.it> using OpenAI GPT.
+This document has been copyedited with AI using <https://copyaid.it>.
 
 
 # History
