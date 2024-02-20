@@ -183,7 +183,7 @@ The third field of all lines in the `allowed_signers` files is the key type
 `ssh-ed25519`.
 
 **Criterion**:
-All paths of all Git commit trees match the EBNF grammar for DSGL Paths (definition
+All paths of all Git commit trees match the ABNF grammar for DSGL Paths (definition
 follows).
 
 **Criterion**:
@@ -197,17 +197,22 @@ In other words,
 if a Git tree directly contains an `object` entry,
 then it is the only direct entry in that Git tree.
 
-### DSGL Paths in Extended Backus—Naur Form
+<!-- copybreak off -->
 
-Note that `[ x ] * N` matches zero to N repetitions of `x`.
+### DSGL Paths in Augmented Backus—Naur Form (ABNF)
+
+The following grammar is expressed in an extended Augmented Backus—Naur Form from
+[RFC5234](https://www.rfc-editor.org/info/rfc5234) [@rfc5234]
+with the vertical bar (`|`) synonymous with the slash (`/`) for matching alternatives,
+and ellipsis (`…`) matching any ASCII character in a range.
 
 ```
-path ::= "signed_succession/allowed_signers" | snapshot
-snapshot ::= ( [ non_neg_int "/" ] * 3 ) pos_int "/object" ;
-non_neg_int ::= "0" | pos_int ;
-pos_int ::= pos_dec_digit ( [ dec_digit ] * 3 ) ;
-dec_digit := "0" | pos_dec_digit;
-pos_dec_digit := "1" ... "9" ;
+path = "signed_succession/allowed_signers" | snapshot
+snapshot = *(non_neg_int "/") pos_int "/object"
+non_neg_int = "0" | pos_int
+pos_int = pos_dec_digit *(dec_digit)
+dec_digit = "0" | pos_dec_digit
+pos_dec_digit = "1"…"9"
 ```
 <!-- copybreak off -->
 
@@ -274,6 +279,9 @@ branch names do not constitute a part of the document succession record.
 Thank you to Valentin Lorentz for raising questions about design choices
 and pointing out an important shortcoming in how GPG digital signatures were used
 in the initial Git implementation of the Hidos library (version 0.3) [@hidos:0.3].
+
+This document has been copyedited with <https://copyaid.it> using OpenAI GPT.
+
 
 # History
 
