@@ -16,18 +16,24 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
-      - uses: castedo/baseprinter-action@v5
+      - name: "Generate baseprint and commit to autobaseprint branch"
+        uses: castedo/baseprinter-action@v18
         with:
-          defaults-file: "pandocin.yaml"
+          just-recipe: baseprint
+          baseprint-path: baseprint
+      - name: "Upload HTML/PDF preview artifacts for GitHub Pages"
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _preview
   deploy:
     needs: build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: "Deploy to GitHub Pages"
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
