@@ -7,11 +7,8 @@ metadata:
     email: castedo@castedo.com
     orcid: https://orcid.org/0000-0002-5014-4809
   copyright:
-    year: "2024"
     statement: "© 2024, Ellerman et al"
-    holder: Ellerman et al
   license:
-    type: open-access
     link: "https://creativecommons.org/licenses/by/4.0/"
     text: >-
       This document is distributed under a Creative Commons Attribution 4.0
