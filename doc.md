@@ -118,7 +118,7 @@ would be stored in a Git tree at the path `2/1/object`.
 paths to have no more than three integer components and integers to be no more than 3
 digits.
 
-<!-- copybreak on -->
+<!-- copybreak off -->
 
 
 Formal Definitions
@@ -315,8 +315,19 @@ in the initial Git implementation of the Hidos library (version 0.3) [@hidos:0.3
 
 This document has been copyedited with AI using <https://copyaid.it>.
 
+<!-- copybreak on -->
 
-# History
+
+Changes
+-------
+
+## To edition 1.1
 
 * Copied Git storage specifics from [edition 2.1 of the DSI
   specification](https://perm.pub/1wFGhvmv8XZfPx0O5Hya2e9AyXo/2.1).
+
+## From edition 1.1 to 2.1
+
+* Added restrictions on document snapshot tree sub-entries.
+* Restricted integers of an edition number to have no more than 3 digits.
+* Restricted edition numbers to have no more than 3 integers.
