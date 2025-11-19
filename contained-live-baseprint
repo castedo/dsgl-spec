@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+SRCDIR=$(realpath $(dirname "$0"))
+podman run \
+    --rm -v=$SRCDIR:/mnt -w=/mnt -it --init -p=8080:8080 \
+    registry.gitlab.com/perm.pub/dock/baseprinter \
+    ./live-baseprint
