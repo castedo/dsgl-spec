@@ -284,13 +284,24 @@ branch names do not constitute a part of the document succession record.</p>
 and pointing out an important shortcoming in how GPG digital signatures were used
 in the initial Git implementation of the Hidos library (version 0.3)<sup><xref rid="hidos:0.3" ref-type="bibr">7</xref></sup>.</p>
       <p>This document has been copyedited with AI using <a rel="external" href="https://copyaid.it">https://copyaid.it</a>.</p>
-    </section>
-    <section id="history">
-      <h2>History</h2>
-      <ul>
-        <li>Copied Git storage specifics from <a rel="external" href="https://perm.pub/1wFGhvmv8XZfPx0O5Hya2e9AyXo/2.1">edition 2.1 of the DSI
+      <section id="changes">
+        <h3>Changes</h3>
+      </section>
+      <section id="to-edition-1.1">
+        <h3>To edition 1.1</h3>
+        <ul>
+          <li>Copied Git storage specifics from <a rel="external" href="https://perm.pub/1wFGhvmv8XZfPx0O5Hya2e9AyXo/2.1">edition 2.1 of the DSI
 specification</a>.</li>
-      </ul>
+        </ul>
+      </section>
+      <section id="from-edition-1.1-to-2.1">
+        <h3>From edition 1.1 to 2.1</h3>
+        <ul>
+          <li>Added restrictions on document snapshot tree sub-entries.</li>
+          <li>Restricted integers of an edition number to have no more than 3 digits.</li>
+          <li>Restricted edition numbers to have no more than 3 integers.</li>
+        </ul>
+      </section>
     </section>
   </article-body>
   <back>
