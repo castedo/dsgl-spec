@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+mkdir -p _preview
+live-server --cors --no-css-inject _preview &
+nodemon --exec 'just baseprint-fast' --ext md,yaml,bib
+true

@@ -23,7 +23,7 @@ abstract: |
 
 Websites like [https://perm.pub](https://perm.pub)
 use free open-source software, such as the Python package
-[Epijats](https://gitlab.com/perm.pub/epijats),
+[Hidos](https://gitlab.com/perm.pub/hidos),
 to process the formats of
 Document Succession Git Layout (DSGL),
 [Document Succession Identifiers (DSI)](https://perm.pub/1wFGhvmv8XZfPx0O5Hya2e9AyXo),
@@ -42,7 +42,7 @@ Tutorials and introductory materials are also available at
 This document is a specification of DSGL for interoperability with the following
 reference implementations:
 
-* the Python package [Hidos](https://pypi.org/project/hidos/) version 1.3 [@hidos:1.3] and
+* the Python package [Hidos](https://pypi.org/project/hidos/) version 2.6 [@hidos:2.6] and
 * the [Document Succession Highly Manual Toolkit](https://manual.perm.pub) [@dshmtm].
 
 This specification excludes potential DSGL features that are not implemented in
@@ -114,7 +114,12 @@ would be stored in a Git tree at the path `2/1/object`.
 
 > <https://archive.softwareheritage.org/swh:1:dir:361534f2bcf78e6312a32916469e4720c7c9bb6f>
 
-<!-- copybreak off -->
+[Hidos](https://pypi.org/project/hidos/) (as of version 2.6) [@hidos:2.6] restricts
+paths to have no more than three integer components and integers to be no more than 3
+digits.
+
+<!-- copybreak on -->
+
 
 Formal Definitions
 ------------------
@@ -131,7 +136,7 @@ commit records. The 20-byte binary hash of this initial Git commit is the hash
 used for the base DSI of the document succession.
 
 **Criterion**:
-All document snapshots are stored as a Git blob or Git tree with the name `object`
+All document snapshots are stored as a Git blob or Git tree with the entry name `object`
 (in its containing Git tree).
 
 **Criterion**:
@@ -139,15 +144,46 @@ The Git tree containing an `object` entry is not
 the top-level Git commit tree and is named with a positive integer.
 
 **Criterion**:
-The full path to the containing tree of an `object` entry for a document snapshot
+The full path to the tree containing an `object` entry
 consists of non-negative integers separated by slashes.
 These non-negative integers correspond to the non-negative integers separated
 by periods in the DSI.
 
 **Criterion**:
+There are at most three integer components in the full path to the tree containing an
+`object` entry.
+
+**Criterion**:
+Integer components have no more than three digits (in the full path to the tree
+containing an `object` entry).
+
+**Criterion**:
 The document snapshot assigned to an edition number is the first Git blob or tree
 committed to an `object` entry following the path corresponding to the edition number.
 Any subsequent `object` entries at this path do not change the DSI assignment.
+
+
+### Criteria for document snapshot Git trees
+
+The criteria of this subsection apply to document snapshots encoded as Git trees (with the
+entry name 'object').
+
+**Criterion**:
+All sub-entries in a document snapshot tree (`object` tree) are either Git blobs
+or Git trees.
+
+**Criterion**:
+All sub-entry names under a document snapshot tree (`object` tree) do not start with a
+full stop character (`'.'`, `U+002E`).
+
+**Criterion**:
+No symlinks are in a document snapshot tree (`object` tree).
+
+**Criterion**:
+No Git executable bits are set for any sub-entries under a document snapshot tree (`object` tree).
+
+<!-- copybreak off -->
+
 
 ### Criteria for a **Signed** Document Succession in DSGL
 
@@ -206,12 +242,10 @@ The following grammar is expressed in ISO/IEC 14977
 extended further to allow an ellipsis (`…`) to denote a range of ASCII characters.
 
 ```
-path = "signed_succession/allowed_signers" | snapshot ;
-snapshot = { non_neg_int, "/" }, pos_int, "/object" ;
-non_neg_int = "0" | pos_int ;
-pos_int = pos_dec_digit, { dec_digit } ;
-dec_digit = "0" | pos_dec_digit ;
-pos_dec_digit = "1"…"9" ;
+path = "signed_succession/allowed_signers" | snapshot;
+snapshot = [[pos_int, "/"], pos_int, "/"], non_neg_int, "/object";
+non_neg_int = "0" | pos_int;
+pos_int = "1"…"9", ["0"…"9", ["0"…"9"]];
 ```
 <!-- copybreak off -->
 
